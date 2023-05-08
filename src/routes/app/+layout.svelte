@@ -1,14 +1,14 @@
 <script>
     import { AppShell } from '@skeletonlabs/skeleton';
-    import Header from '../../components/layouts/Header.svelte';
-    
+    import Header from '../../components/layout/Header.svelte';
+
 </script>
 
-
-<AppShell>
-	<svelte:fragment slot="header">
+<AppShell slotPageContent='overflow-hidden'>
+    <svelte:fragment slot="header">
         <Header />
     </svelte:fragment>
-	<!-- Router Slot -->
-	<slot />
+    <!-- Router Slot -->
+    <slot />
+   
 </AppShell>

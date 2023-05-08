@@ -1,1 +1,7 @@
-<h1 class="text-red-400">hi</h1>
+<script>
+    import Map from "../../components/Map.svelte";
+</script>
+
+<div class="h-full w-full overflow-hidden">
+    <Map />
+</div>

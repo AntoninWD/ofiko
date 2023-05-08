@@ -3,3 +3,11 @@
 @tailwind utilities;
 
 html, body { @apply h-full overflow-hidden; }
+
+
+.bg-grid {
+    background-image: linear-gradient(#b5c3d9 0.5px, transparent 0.5px, transparent calc(100% - 0.5px), #b5c3d9 calc(100% - 0.5px)), linear-gradient(90deg, #b5c3d9 0.5px, transparent 0.5px, transparent calc(100% - 0.5px), #b5c3d9 calc(100% - 0.5px));
+    background-size: 50px 50px;
+    border: 0.5px solid #b5c3d9;  
+    opacity: 0.3;
+}

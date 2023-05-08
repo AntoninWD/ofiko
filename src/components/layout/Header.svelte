@@ -19,7 +19,7 @@
 </script>
 
 <nav
-	class="backdrop-blur bg-glass bg-slate-800 flex items-center px-2 pt-2"
+	class="shadow-md bg-slate-800 flex items-center px-2 pt-2 rounded-b-md"
 >
 	<div class="flex items-center border-r border-gray-500 pr-6 mr-4 mb-2 cursor-pointer">
 		<img
