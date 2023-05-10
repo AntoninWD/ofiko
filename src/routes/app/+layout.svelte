@@ -4,7 +4,7 @@
 
 </script>
 
-<AppShell slotPageContent='overflow-hidden'>
+<AppShell slotPageContent=''>
     <svelte:fragment slot="header">
         <Header />
     </svelte:fragment>
