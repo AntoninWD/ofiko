@@ -12,7 +12,7 @@
 
 <div
     class="border-4 border-blue-600 rounded-full absolute transition-all"
-    style="top: {tokenPosition.y}px; left: {tokenPosition.x}px ; width: {tokenSize}px; height: {tokenSize}px; transition-duration: {duration}s;"
+    style="top: {tokenPosition.y}px; left: {tokenPosition.x}px ; width: {tokenSize}px; height: {tokenSize}px; transition-duration: {duration}ms;"
     ><img
         class="w-full h-full rounded-full"
         src="/images/profile.jpg"

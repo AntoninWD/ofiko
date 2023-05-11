@@ -1,6 +1,11 @@
 <script lang="ts">
     import AvatarToken from './AvatarToken.svelte';
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
+
+    interface Position {
+        x: number;
+        y: number;
+    }
 
     let mapRef: HTMLButtonElement;
     let rippleRef: HTMLDivElement;
@@ -14,7 +19,7 @@
     const defaultPosition = { x: mapWidth / 2, y: mapHeight / 2 };
     // ------------------------------
     let position = defaultPosition;
-    let duration = speed;
+    let duration = 0;
     let rippleStyle = '';
     let isMoving = false;
 
@@ -24,13 +29,20 @@
 
     onMount(() => {
         windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight;
+        windowHeight = window.innerHeight - headerHeight;
     });
+
+    $: mapCenter = {
+        x: windowWidth / 2,
+        y: windowHeight / 2,
+    };
+
+    $: mapPosition = calcMapPosition(position, mapCenter);
 
     function getClickPosition(e: MouseEvent) {
         const mapRect = mapRef.getBoundingClientRect();
 
-        if(isMoving) return;
+        if (isMoving) return;
         isMoving = true;
 
         let x = e.clientX - mapRect.left;
@@ -49,49 +61,39 @@
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         // Calculate the transition duration based on the distance
-        duration = distance / speed;
+        duration = (distance / speed) * 1000;
 
         // To allow click when the token as reach 80% of the destination
-        const durationBuffer =  duration * 0.8;
+        const durationBuffer = duration * 0.8;
+
+        position = { x, y };
+
+        animateClick(position);
 
         // prevent click if is moving
         setTimeout(() => {
             isMoving = false;
-        }, durationBuffer * 1000);
-        
-        position = { x, y };
-
-        animateClick(position);
+        }, durationBuffer);
     }
 
-    $: mapCenter = {
-        x: windowWidth / 2,
-        y: windowHeight / 2,
-    };
-
-    $: mapPosition = calcMapPosition(position) || {
-        x: position.x - mapCenter.x,
-        y: position.y - mapCenter.y,
-    };
-
-    function calcMapPosition(position: { x: number; y: number }) {
+    function calcMapPosition(position: Position, map: Position) {
         let x = position.x;
         let y = position.y;
 
         // Prevent grid from moving outside the map
-        x = Math.max(x, mapCenter.x);
-        x = Math.min(x, mapWidth - mapCenter.x);
+        x = Math.max(x, map.x);
+        x = Math.min(x, mapWidth - map.x);
 
-        y = Math.max(y, mapCenter.y);
-        y = Math.min(y, mapHeight - mapCenter.y);
+        y = Math.max(y, map.y);
+        y = Math.min(y, mapHeight - map.y);
 
         return {
-            x: x - mapCenter.x,
-            y: y - mapCenter.y,
+            x: x - map.x,
+            y: y - map.y,
         };
     }
 
-    function animateClick(position: { x: number; y: number }) {
+    function animateClick(position: Position) {
         const rippleRect = rippleRef.getBoundingClientRect();
 
         const ripplePosition = {
@@ -106,13 +108,13 @@
             rippleStyle = '';
         }, 300);
     }
+
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
-
 <div
     class="bg-slate-600 absolute transition-all"
-    style="transform: translate(-{mapPosition.x}px, {-mapPosition.y}px); transition-duration: {duration}s;"
+    style="transform: translate(-{mapPosition.x}px, -{mapPosition.y}px); transition-duration: {duration}ms;"
 >
     <div class="relative" style="width: {mapWidth}px; height: {mapHeight}px">
         <button
