@@ -2,6 +2,6 @@
     import Map from "../../components/Map.svelte";
 </script>
 
-<div>
+<div class='relative'>
     <Map />
 </div>
