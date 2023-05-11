@@ -51,10 +51,13 @@
         // Calculate the transition duration based on the distance
         duration = distance / speed;
 
+        // To allow click when the token as reach 80% of the destination
+        const durationBuffer =  duration * 0.8;
+
         // prevent click if is moving
         setTimeout(() => {
             isMoving = false;
-        }, duration * 1000);
+        }, durationBuffer * 1000);
         
         position = { x, y };
 
