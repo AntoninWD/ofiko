@@ -10,10 +10,11 @@
     const mapWidth = 5000;
     const mapHeight = 5000;
     const headerHeight = 56;
+    const speed = 500;
     const defaultPosition = { x: mapWidth / 2, y: mapHeight / 2 };
     // ------------------------------
     let position = defaultPosition;
-
+    let duration = speed;
     // get window size
     let windowWidth = 0;
     let windowHeight = 0;
@@ -35,7 +36,14 @@
 
         y = Math.max(y, tokenSize / 2);
         y = Math.min(y, mapRect.height - tokenSize / 2);
-
+        
+        // Calculate the distance between the click and the token's current position
+        const dx = x - position.x;
+        const dy = y - position.y;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        
+        // Calculate the transition duration based on the distance
+        duration = distance / speed;
         position = { x, y };
     }
 
@@ -70,8 +78,8 @@
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
 
 <div
-    class="bg-slate-600 absolute transition-all duration-500"
-    style="transform: translate(-{mapPosition.x}px, {-mapPosition.y}px)"
+    class="bg-slate-600 absolute transition-all"
+    style="transform: translate(-{mapPosition.x}px, {-mapPosition.y}px); transition-duration: {duration}s;"
 >
     <div class="relative" style="width: {mapWidth}px; height: {mapHeight}px">
         <button
@@ -79,7 +87,7 @@
             on:click={getClickPosition}
             class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
         >
-            <AvatarToken {position} {tokenSize} />
+            <AvatarToken {position} {tokenSize} {duration}/>
         </button>
     </div>
 </div>
