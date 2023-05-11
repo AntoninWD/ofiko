@@ -36,6 +36,7 @@
         x: windowWidth / 2,
         y: windowHeight / 2,
     };
+    $: hasRendered = windowHeight > 0 && windowWidth > 0;
 
     $: mapPosition = calcMapPosition(position, mapCenter);
 
@@ -108,12 +109,10 @@
             rippleStyle = '';
         }, 300);
     }
-
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
 
-{#if windowHeight > 0 && windowWidth > 0}
 <div
     class="bg-slate-600 absolute transition-all"
     style="transform: translate(-{mapPosition.x}px, -{mapPosition.y}px); transition-duration: {duration}ms;"
@@ -124,7 +123,9 @@
             on:click={getClickPosition}
             class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
         >
-            <AvatarToken {position} {tokenSize} {duration} />
+            {#if hasRendered}
+                <AvatarToken {position} {tokenSize} {duration} />
+            {/if}
             <div
                 bind:this={rippleRef}
                 class={`w-[5px] h-[5px] bg-transparent absolute rounded-full border border-blue-500/50`}
@@ -133,4 +134,3 @@
         </button>
     </div>
 </div>
-{/if}
