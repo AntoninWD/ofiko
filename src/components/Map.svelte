@@ -1,6 +1,15 @@
 <script lang="ts">
     import AvatarToken from './AvatarToken.svelte';
-    import { afterUpdate, onMount } from 'svelte';
+    import { onMount } from 'svelte';
+    import {
+        MAP_WIDTH,
+        MAP_HEIGHT,
+        TOKEN_SIZE,
+        HEADER_HEIGHT,
+        MOVEMENT_SPEED,
+        DEFAULT_POSITION,
+    } from '../configs/map'
+    import ClickAnimate from './common/ClickAnimate.svelte';
 
     interface Position {
         x: number;
@@ -8,53 +17,43 @@
     }
 
     let mapRef: HTMLButtonElement;
-    let rippleRef: HTMLDivElement;
 
-    // TODO: place this in a config file
-    const tokenSize = 48;
-    const mapWidth = 5000;
-    const mapHeight = 5000;
-    const headerHeight = 56;
-    const speed = 500;
-    const defaultPosition = { x: mapWidth / 2, y: mapHeight / 2 };
-    // ------------------------------
-    let position = defaultPosition;
+    let position = DEFAULT_POSITION;
     let duration = 0;
-    let rippleStyle = '';
     let isMoving = false;
-
-    // get window size
     let windowWidth = 0;
     let windowHeight = 0;
+    let triggerClick = false;
 
     onMount(() => {
         windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight - headerHeight;
+        windowHeight = window.innerHeight - HEADER_HEIGHT;
     });
 
     $: mapCenter = {
         x: windowWidth / 2,
         y: windowHeight / 2,
     };
-    $: hasRendered = windowHeight > 0 && windowWidth > 0;
-
     $: mapPosition = calcMapPosition(position, mapCenter);
+    $: hasRendered = windowHeight > 0 && windowWidth > 0;
 
     function getClickPosition(e: MouseEvent) {
         const mapRect = mapRef.getBoundingClientRect();
 
         if (isMoving) return;
+
         isMoving = true;
+        triggerClick = true;
 
         let x = e.clientX - mapRect.left;
         let y = e.clientY - mapRect.top;
 
         // Make sure token is not outside the map
-        x = Math.max(x, tokenSize / 2);
-        x = Math.min(x, mapRect.width - tokenSize / 2);
+        x = Math.max(x, TOKEN_SIZE / 2);
+        x = Math.min(x, mapRect.width - TOKEN_SIZE / 2);
 
-        y = Math.max(y, tokenSize / 2);
-        y = Math.min(y, mapRect.height - tokenSize / 2);
+        y = Math.max(y, TOKEN_SIZE / 2);
+        y = Math.min(y, mapRect.height - TOKEN_SIZE / 2);
 
         // Calculate the distance between the click and the token's current position
         const dx = x - position.x;
@@ -62,18 +61,17 @@
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         // Calculate the transition duration based on the distance
-        duration = (distance / speed) * 1000;
+        duration = (distance / MOVEMENT_SPEED) * 1000;
 
         // To allow click when the token as reach 80% of the destination
         const durationBuffer = duration * 0.8;
 
         position = { x, y };
 
-        animateClick(position);
-
-        // prevent click if is moving
+        // Prevent click if is moving
         setTimeout(() => {
             isMoving = false;
+            triggerClick = false;
         }, durationBuffer);
     }
 
@@ -83,10 +81,10 @@
 
         // Prevent grid from moving outside the map
         x = Math.max(x, map.x);
-        x = Math.min(x, mapWidth - map.x);
+        x = Math.min(x, MAP_WIDTH - map.x);
 
         y = Math.max(y, map.y);
-        y = Math.min(y, mapHeight - map.y);
+        y = Math.min(y, MAP_HEIGHT - map.y);
 
         return {
             x: x - map.x,
@@ -94,21 +92,6 @@
         };
     }
 
-    function animateClick(position: Position) {
-        const rippleRect = rippleRef.getBoundingClientRect();
-
-        const ripplePosition = {
-            x: position.x - rippleRect.width / 2,
-            y: position.y - rippleRect.height / 2,
-        };
-
-        rippleStyle = `left: ${ripplePosition.x}px; top: ${ripplePosition.y}px; animation: ripple-effect .3s  linear;`;
-
-        // Reset ripple animation
-        setTimeout(() => {
-            rippleStyle = '';
-        }, 300);
-    }
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
@@ -117,20 +100,16 @@
     class="bg-slate-600 absolute transition-all"
     style="transform: translate(-{mapPosition.x}px, -{mapPosition.y}px); transition-duration: {duration}ms;"
 >
-    <div class="relative" style="width: {mapWidth}px; height: {mapHeight}px">
+    <div class="relative" style="width: {MAP_WIDTH}px; height: {MAP_HEIGHT}px">
         <button
             bind:this={mapRef}
             on:click={getClickPosition}
             class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
         >
             {#if hasRendered}
-                <AvatarToken {position} {tokenSize} {duration} />
+                <AvatarToken {position} {duration} />
             {/if}
-            <div
-                bind:this={rippleRef}
-                class={`w-[5px] h-[5px] bg-transparent absolute rounded-full border border-blue-500/50`}
-                style={rippleStyle}
-            />
+            <ClickAnimate {triggerClick} {position}/>
         </button>
     </div>
 </div>
