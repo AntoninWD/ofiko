@@ -1,5 +1,4 @@
 - Refactor existing code
-- Fix render map bug
 - Add svg items
 (
 desk,

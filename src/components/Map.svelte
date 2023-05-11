@@ -112,6 +112,8 @@
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
+
+{#if windowHeight > 0 && windowWidth > 0}
 <div
     class="bg-slate-600 absolute transition-all"
     style="transform: translate(-{mapPosition.x}px, -{mapPosition.y}px); transition-duration: {duration}ms;"
@@ -131,3 +133,4 @@
         </button>
     </div>
 </div>
+{/if}
