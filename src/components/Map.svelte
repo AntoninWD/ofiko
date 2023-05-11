@@ -1,6 +1,5 @@
 <script lang="ts">
     import AvatarToken from './AvatarToken.svelte';
-    import { afterUpdate } from 'svelte';
     import { onMount } from 'svelte';
 
     let mapRef: HTMLButtonElement;
@@ -17,18 +16,22 @@
     let position = defaultPosition;
     let duration = speed;
     let rippleStyle = '';
-    
+    let isMoving = false;
+
     // get window size
     let windowWidth = 0;
     let windowHeight = 0;
 
     onMount(() => {
         windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight - headerHeight;
+        windowHeight = window.innerHeight;
     });
 
     function getClickPosition(e: MouseEvent) {
         const mapRect = mapRef.getBoundingClientRect();
+
+        if(isMoving) return;
+        isMoving = true;
 
         let x = e.clientX - mapRect.left;
         let y = e.clientY - mapRect.top;
@@ -47,7 +50,14 @@
 
         // Calculate the transition duration based on the distance
         duration = distance / speed;
+
+        // prevent click if is moving
+        setTimeout(() => {
+            isMoving = false;
+        }, duration * 1000);
+        
         position = { x, y };
+
         animateClick(position);
     }
 
@@ -86,14 +96,13 @@
             y: position.y - rippleRect.height / 2,
         };
 
-        rippleStyle = `left: ${ripplePosition.x}px; top: ${ripplePosition.y}px; animation: ripple-effect .2s  linear;`;
+        rippleStyle = `left: ${ripplePosition.x}px; top: ${ripplePosition.y}px; animation: ripple-effect .3s  linear;`;
 
         // Reset ripple animation
         setTimeout(() => {
             rippleStyle = '';
-        }, 200);
+        }, 300);
     }
-
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
@@ -109,8 +118,11 @@
             class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
         >
             <AvatarToken {position} {tokenSize} {duration} />
-            <div bind:this={rippleRef} class={`w-2 h-2 bg-transparent absolute rounded-full border border-blue-500/50`} style={rippleStyle}/>
-          
+            <div
+                bind:this={rippleRef}
+                class={`w-[5px] h-[5px] bg-transparent absolute rounded-full border border-blue-500/50`}
+                style={rippleStyle}
+            />
         </button>
     </div>
 </div>

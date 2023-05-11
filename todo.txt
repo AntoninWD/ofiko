@@ -1,5 +1,4 @@
 - Refactor existing code
-- Add click effect
 - Fix render map bug
 - Add svg items
 (
