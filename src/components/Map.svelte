@@ -4,6 +4,7 @@
     import { onMount } from 'svelte';
 
     let mapRef: HTMLButtonElement;
+    let rippleRef: HTMLDivElement;
 
     // TODO: place this in a config file
     const tokenSize = 48;
@@ -15,6 +16,8 @@
     // ------------------------------
     let position = defaultPosition;
     let duration = speed;
+    let rippleStyle = '';
+    
     // get window size
     let windowWidth = 0;
     let windowHeight = 0;
@@ -36,15 +39,16 @@
 
         y = Math.max(y, tokenSize / 2);
         y = Math.min(y, mapRect.height - tokenSize / 2);
-        
+
         // Calculate the distance between the click and the token's current position
         const dx = x - position.x;
         const dy = y - position.y;
-        const distance = Math.sqrt(dx*dx + dy*dy);
-        
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
         // Calculate the transition duration based on the distance
         duration = distance / speed;
         position = { x, y };
+        animateClick(position);
     }
 
     $: mapCenter = {
@@ -73,6 +77,23 @@
             y: y - mapCenter.y,
         };
     }
+
+    function animateClick(position: { x: number; y: number }) {
+        const rippleRect = rippleRef.getBoundingClientRect();
+
+        const ripplePosition = {
+            x: position.x - rippleRect.width / 2,
+            y: position.y - rippleRect.height / 2,
+        };
+
+        rippleStyle = `left: ${ripplePosition.x}px; top: ${ripplePosition.y}px; animation: ripple-effect .2s  linear;`;
+
+        // Reset ripple animation
+        setTimeout(() => {
+            rippleStyle = '';
+        }, 200);
+    }
+
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
@@ -87,7 +108,9 @@
             on:click={getClickPosition}
             class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
         >
-            <AvatarToken {position} {tokenSize} {duration}/>
+            <AvatarToken {position} {tokenSize} {duration} />
+            <div bind:this={rippleRef} class={`w-2 h-2 bg-transparent absolute rounded-full border border-blue-500/50`} style={rippleStyle}/>
+          
         </button>
     </div>
 </div>

@@ -1,7 +1,6 @@
 - Refactor existing code
 - Add click effect
 - Fix render map bug
-- Improve token movement
 - Add svg items
 (
 desk,

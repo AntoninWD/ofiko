@@ -29,3 +29,10 @@ body {
 .absolute-centered {
     @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(15);
+    opacity: 0.01;
+  }
+}
