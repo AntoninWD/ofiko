@@ -1,0 +1,12 @@
+- Refactor existing code 
+- Add svg items(desk, chair, plant, folder-library, sofa, kitchen counter,  kitchen chair, kitchen table, meeting table, tv);
+- Make layout of the map with the items (if no items make the wall etc..)
+- Prevent token to move on svg items
+- Install websocket
+- Make auth flow(only on invite for now)
+- Test with 2 connections and interact
+- Add voice system
+- Proximity chat system
+- Add link system(ex: when entering in meeting room show google meet popup)
+- Add status system
+- Add writing chat system
