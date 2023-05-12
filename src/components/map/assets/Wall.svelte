@@ -17,11 +17,11 @@
         right: 'rt',
     };
 
-    let wallStyle = 'border-[12px]';
-    let wallSize = isVertical ? 'w-full' : 'h-full';
-
     const shouldMoveWall = oppositeDoorPlacement[placement] === doorPosition;
     const hasDoor = wallWithDoor[placement].includes(doorPosition);
+
+    let wallStyle = 'border-[12px]';
+    let wallSize = isVertical ? 'w-full' : 'h-full';
 
     if (hasDoor) {
         wallSize = isVertical ? 'w-[80%]' : 'h-[80%]';
@@ -30,6 +30,7 @@
             wallStyle += isVertical ? ' right-0' : ' bottom-0';
         }
     }
+    
 </script>
 
 <div

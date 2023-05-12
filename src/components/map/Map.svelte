@@ -102,7 +102,7 @@
         <div
             bind:this={mapRef}
             on:click={getClickPosition}
-            class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered border-2 border-blue-500`}
+            class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}
         >
             {#if hasRendered}
                 <AvatarToken {position} {duration} />

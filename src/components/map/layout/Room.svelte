@@ -8,10 +8,12 @@
     export let doorPosition: DoorPosition;
 </script>
 
-<div class="relative" style="height: {height}px; width: {width}px">
-    <Wall placement="top" {doorPosition} />
-    <Wall placement="bottom" {doorPosition} />
-    <Wall placement="left" {doorPosition} />
-    <Wall placement="right" {doorPosition} />
-    <slot />
+<div class="absolute">
+    <div class="relative" style="height: {height}px; width: {width}px">
+        <Wall placement="top" {doorPosition} />
+        <Wall placement="bottom" {doorPosition} />
+        <Wall placement="left" {doorPosition} />
+        <Wall placement="right" {doorPosition} />
+        <slot />
+    </div>
 </div>

@@ -1,6 +1,11 @@
 <script lang="ts">
     import Room from './Room.svelte';
+    import { layoutConfig } from './layout';
+    const { rooms } = layoutConfig;
 </script>
 
-<!-- Kitchen Room -->
-<Room height={750} width={1250} doorPosition='br' />
+
+
+{#each Object.values(rooms) as room}
+    <Room {...room} />
+{/each}
