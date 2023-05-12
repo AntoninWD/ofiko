@@ -10,11 +10,8 @@
         DEFAULT_POSITION,
     } from '../../configs/map'
     import ClickAnimate from '../common/ClickAnimate.svelte';
-
-    interface Position {
-        x: number;
-        y: number;
-    }
+    import type { Position} from './types';
+    import Layout from './layout/Layout.svelte';
 
     let mapRef: HTMLDivElement;
 
@@ -111,6 +108,7 @@
                 <AvatarToken {position} {duration} />
             {/if}
             <ClickAnimate {triggerClick} {position}/>
+            <Layout />
         </div>
     </div>
 </div>

@@ -1,10 +1,5 @@
 <script lang="ts">
-
-    interface Position {
-        x: number;
-        y: number;
-    }
-
+    import type { Position} from '../map/types';
     export let style = '';
     export let triggerClick: boolean;
     export let position: Position;
