@@ -12,5 +12,5 @@
 <div
     class="border-4 border-blue-600 rounded-full absolute transition-all"
     style="top: {tokenPosition.y}px; left: {tokenPosition.x}px ; width: {TOKEN_SIZE}px; height: {TOKEN_SIZE}px; transition-duration: {duration}ms;"
-    ><img class="w-full h-full rounded-full" src="/images/profile.jpg" alt="Codepiece" />
+    ><img class="no_highlights w-full h-full rounded-full" src="/images/profile.jpg" alt="Codepiece" />
 </div>

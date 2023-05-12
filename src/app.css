@@ -25,13 +25,25 @@ body {
     opacity: 1;
 }
 
+/* prevent text selection */
+/* Was caused when double click on the map the token became blue */
+.no_highlights {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .absolute-centered {
     @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
 }
 
 @keyframes ripple-effect {
-  to {
-    transform: scale(15);
-    opacity: 0.01;
-  }
+    to {
+        transform: scale(15);
+        opacity: 0.01;
+    }
 }
