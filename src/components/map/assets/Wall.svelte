@@ -34,6 +34,6 @@
 </script>
 
 <div
-    class="absolute border-[12px] border-slate-300 shadow-sm border-solid {wallStyle} {wallSize}"
+    class="absolute border-[12px] border-slate-200 shadow-sm border-solid {wallStyle} {wallSize}"
     style="{placement}: 0;"
 />

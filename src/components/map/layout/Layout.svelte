@@ -4,8 +4,6 @@
     const { rooms } = layoutConfig;
 </script>
 
-
-
-{#each Object.values(rooms) as room}
+{#each rooms as room}
     <Room {...room} />
 {/each}
