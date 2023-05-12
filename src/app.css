@@ -22,8 +22,7 @@ body {
             #b5c3d9 calc(100% - 0.5px)
         );
     background-size: 50px 50px;
-    border: 0.5px solid #b5c3d9;
-    opacity: 0.9;
+    opacity: 1;
 }
 
 .absolute-centered {

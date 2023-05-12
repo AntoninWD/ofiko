@@ -35,6 +35,6 @@
 
 <div
     bind:this={ref}
-    class={`w-[5px] h-[5px] bg-transparent absolute rounded-full border border-blue-500/50`}
+    class={`w-[5px] h-[5px] bg-transparent absolute rounded-full border border-blue-500/50 ${!style && 'hidden'}`}
     {style}
 />

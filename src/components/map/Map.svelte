@@ -16,7 +16,7 @@
         y: number;
     }
 
-    let mapRef: HTMLButtonElement;
+    let mapRef: HTMLDivElement;
 
     let position = DEFAULT_POSITION;
     let duration = 0;
@@ -79,7 +79,7 @@
         let x = position.x;
         let y = position.y;
 
-        // Prevent grid from moving outside the map
+        // Add boundaries for the map viewpoint
         x = Math.max(x, map.x);
         x = Math.min(x, MAP_WIDTH - map.x);
 
@@ -101,15 +101,16 @@
     style="transform: translate(-{mapPosition.x}px, -{mapPosition.y}px); transition-duration: {duration}ms;"
 >
     <div class="relative" style="width: {MAP_WIDTH}px; height: {MAP_HEIGHT}px">
-        <button
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div
             bind:this={mapRef}
             on:click={getClickPosition}
-            class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered`}
+            class={`rounded shadow-md bg-white bg-grid w-[99%] h-[99%] bg-repeat absolute-centered border-2 border-blue-500`}
         >
             {#if hasRendered}
                 <AvatarToken {position} {duration} />
             {/if}
             <ClickAnimate {triggerClick} {position}/>
-        </button>
+        </div>
     </div>
 </div>
