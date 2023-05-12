@@ -1,5 +1,5 @@
 <script>
-    import Map from "../../components/Map.svelte";
+    import Map from "../../components/map/Map.svelte";
 </script>
 
 <div class='relative'>

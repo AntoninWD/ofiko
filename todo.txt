@@ -1,6 +1,4 @@
-- Refactor existing code
 - Add svg items
-(
 desk,
 chair,
 plant,
@@ -11,8 +9,11 @@ kitchen chair,
 kitchen table,
 meeting table,
 tv
-);
+-Remove Map as button + warning
+
+
 - Make layout of the map with the items (if no items make the wall etc..)
+    - 
 - Prevent token to move on svg items
 - Install websocket
 - Make auth flow(only on invite for now)

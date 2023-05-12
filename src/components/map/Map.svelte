@@ -1,5 +1,5 @@
 <script lang="ts">
-    import AvatarToken from './AvatarToken.svelte';
+    import AvatarToken from './user/AvatarToken.svelte';
     import { onMount } from 'svelte';
     import {
         MAP_WIDTH,
@@ -8,8 +8,8 @@
         HEADER_HEIGHT,
         MOVEMENT_SPEED,
         DEFAULT_POSITION,
-    } from '../configs/map'
-    import ClickAnimate from './common/ClickAnimate.svelte';
+    } from '../../configs/map'
+    import ClickAnimate from '../common/ClickAnimate.svelte';
 
     interface Position {
         x: number;

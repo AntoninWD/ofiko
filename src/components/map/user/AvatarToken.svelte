@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { TOKEN_SIZE } from '../configs/map';
+    import { TOKEN_SIZE } from '../../../configs/map';
     export let position: { x: number; y: number };
     export let duration: number;
 
