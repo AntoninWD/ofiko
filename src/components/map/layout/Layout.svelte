@@ -2,4 +2,5 @@
     import Room from './Room.svelte';
 </script>
 
-<Room height={500} width={500} doorPosition='br'/>
+<!-- Kitchen Room -->
+<Room height={750} width={1250} doorPosition='br' />

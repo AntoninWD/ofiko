@@ -1,6 +1,7 @@
 <script lang="ts">
+    import type { DoorPosition } from '../types';
     export let placement: 'top' | 'bottom' | 'left' | 'right';
-    export let doorPosition: 'tr' | 'tl' | 'br' | 'bl' | 'rb' | 'rt' | 'lb' | 'lt';
+    export let doorPosition: DoorPosition;
 
     const isVertical = placement === 'top' || placement === 'bottom';
     const wallWithDoor = {
@@ -19,11 +20,11 @@
     let wallStyle = 'border-[12px]';
     let wallSize = isVertical ? 'w-full' : 'h-full';
 
-    const shouldMoveWall = oppositeDoorPlacement[placement].includes(doorPosition);
+    const shouldMoveWall = oppositeDoorPlacement[placement] === doorPosition;
     const hasDoor = wallWithDoor[placement].includes(doorPosition);
 
     if (hasDoor) {
-        wallSize = isVertical ? 'w-[70%]' : 'h-[70%]';
+        wallSize = isVertical ? 'w-[80%]' : 'h-[80%]';
 
         if (shouldMoveWall) {
             wallStyle += isVertical ? ' right-0' : ' bottom-0';
@@ -32,6 +33,6 @@
 </script>
 
 <div
-    class="absolute border-[12px] border-slate-300 border-solid {wallStyle} {wallSize}"
+    class="absolute border-[12px] border-slate-300 shadow-sm border-solid {wallStyle} {wallSize}"
     style="{placement}: 0;"
 />
