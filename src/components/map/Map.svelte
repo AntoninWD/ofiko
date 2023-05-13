@@ -8,9 +8,9 @@
         HEADER_HEIGHT,
         MOVEMENT_SPEED,
         DEFAULT_POSITION,
-    } from '../../configs/map'
+    } from '../../configs/map';
     import ClickAnimate from '../common/ClickAnimate.svelte';
-    import type { Position} from './types';
+    import type { Position } from './types';
     import Layout from './layout/Layout.svelte';
 
     let mapRef: HTMLDivElement;
@@ -60,8 +60,8 @@
         // Calculate the transition duration based on the distance
         duration = (distance / MOVEMENT_SPEED) * 1000;
 
-        // To allow click when the token as reach 80% of the destination
-        const durationBuffer = duration * 0.8;
+        // To allow click when the token as reach 70% of the destination and to prevent spamming
+        const durationBuffer = duration * 0.7;
 
         position = { x, y };
 
@@ -88,7 +88,6 @@
             y: y - map.y,
         };
     }
-
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
@@ -99,16 +98,16 @@
 >
     <div class="relative" style="width: {MAP_WIDTH}px; height: {MAP_HEIGHT}px">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div
-            bind:this={mapRef}
-            on:click={getClickPosition}
-            class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}
-        >
-            {#if hasRendered}
+        {#if hasRendered}
+            <div
+                bind:this={mapRef}
+                on:click={getClickPosition}
+                class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}
+            >
                 <AvatarToken {position} {duration} />
-            {/if}
-            <ClickAnimate {triggerClick} {position}/>
-            <Layout />
-        </div>
+                <ClickAnimate {triggerClick} {position} />
+                <Layout />
+            </div>
+        {/if}
     </div>
 </div>

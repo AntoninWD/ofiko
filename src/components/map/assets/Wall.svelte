@@ -24,7 +24,7 @@
     let wallSize = isVertical ? 'w-full' : 'h-full';
 
     if (hasDoor) {
-        wallSize = isVertical ? 'w-[80%]' : 'h-[80%]';
+        wallSize = isVertical ? 'w-[calc(100%-175px)]' : 'h-[calc(100%-175px)]';
 
         if (shouldMoveWall) {
             wallStyle += isVertical ? ' right-0' : ' bottom-0';
