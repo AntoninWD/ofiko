@@ -54,7 +54,6 @@ rooms.push({
     height: 485,
     doorPosition: 'rt',
     position: {
-        // get Private Office position
         bottom: rooms.find((room) => room.name === 'Private Office')?.height || 0,
         left: 0,
     },

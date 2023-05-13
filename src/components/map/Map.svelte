@@ -60,10 +60,10 @@
         // Calculate the transition duration based on the distance
         duration = (distance / MOVEMENT_SPEED) * 1000;
 
-        // To allow click when the token as reach 70% of the destination and to prevent spamming
-        const durationBuffer = duration * 0.7;
+        // To allow click when the token as reach 50% of the destination and to prevent spamming
+        const durationBuffer = duration * 0.5;
 
-        position = { x, y };
+        position = {...position , x, y};
 
         // Prevent click if is moving
         setTimeout(() => {
@@ -72,7 +72,13 @@
         }, durationBuffer);
     }
 
-    function calcMapPosition(position: Position, map: Position) {
+    function calcMapPosition(
+        position: Position,
+        map: {
+            x: number;
+            y: number;
+        },
+    ) {
         let x = position.x;
         let y = position.y;
 

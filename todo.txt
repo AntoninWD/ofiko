@@ -15,8 +15,8 @@ tv
     - AssetsGroups: ex: office+chair
     - Assets: interaction(events,popup when close to it), anchor(like to sit on it)
 - Prevent token to move on assets
-- Install websocket
 - Supabase, Prisma, Lucia
+- Install websocket
 - Make auth flow(only on invite for now) Lucia
 - Test with 2 connections and interact
 - Add voice system

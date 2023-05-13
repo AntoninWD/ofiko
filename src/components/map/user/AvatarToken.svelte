@@ -1,18 +1,22 @@
 <script lang="ts">
     import { TOKEN_SIZE } from '../../../configs/map';
-    import type { Position } from '../types';
+    import { tokenPosition, updateTokenPosition} from '../../../stores/map'
+    import type { Position, Coverage } from '../types';
     export let position: Position;
     export let duration: number;
 
-    $: tokenPosition = {
-        x: position.x - TOKEN_SIZE / 2,
-        y: position.y - TOKEN_SIZE / 2,
-    };
+    $: updateTokenPosition(position);
+    let tokenLocation: Coverage;
+
+    tokenPosition.subscribe((value) => {
+        tokenLocation = value;
+    });
+
 </script>
 
 <div
     class="shadow-md border-4 border-blue-600 rounded-full absolute transition-all"
-    style="top: {tokenPosition.y}px; left: {tokenPosition.x}px ; width: {TOKEN_SIZE}px; height: {TOKEN_SIZE}px; transition-duration: {duration}ms;"
+    style="top: {tokenLocation.y[0]}px; left: {tokenLocation.x[0]}px ; width: {TOKEN_SIZE}px; height: {TOKEN_SIZE}px; transition-duration: {duration}ms;"
     ><img
         class="no_highlights w-full h-full rounded-full"
         src="/images/profile.jpg"
