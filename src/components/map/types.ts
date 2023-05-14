@@ -5,7 +5,7 @@ export interface Position {
     height: number;
 }
 
-export interface Coverage {
+export interface Coordinates {
     x: [number, number];
     y: [number, number];
 }

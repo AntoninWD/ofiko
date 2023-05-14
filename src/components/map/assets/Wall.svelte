@@ -2,6 +2,14 @@
     import type { DoorPosition } from '../types';
     export let placement: 'top' | 'bottom' | 'left' | 'right';
     export let doorPosition: DoorPosition;
+    export let name: string;
+    import { onMount } from 'svelte';
+    import { updateAssetsCoordinates } from '../../../stores/map';
+    let ref: HTMLDivElement;
+
+    onMount(() => {
+        updateAssetsCoordinates(`${name}-wall-${placement}`, ref);
+    });
 
     const isVertical = placement === 'top' || placement === 'bottom';
     const wallWithDoor = {
@@ -30,10 +38,10 @@
             wallStyle += isVertical ? ' right-0' : ' bottom-0';
         }
     }
-    
 </script>
 
 <div
+    bind:this={ref}
     class="absolute border-[12px] border-slate-200 shadow-sm border-solid {wallStyle} {wallSize}"
     style="{placement}: 0;"
 />

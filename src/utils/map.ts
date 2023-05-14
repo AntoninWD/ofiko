@@ -1,6 +1,6 @@
-import type { Position, Coverage } from '../components/map/types';
+import type { Position, Coordinates } from '../components/map/types';
 
-export const getCoverage = (position: Position): Coverage => {
+export const getCoordinates = (position: Position): Coordinates => {
     const { x, y, width, height } = position;
     return {
         x: [x - width, x + width],

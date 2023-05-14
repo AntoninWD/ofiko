@@ -1,5 +1,4 @@
 import type { DoorPosition } from '../types';
-
 interface Room {
     name: string;
     width: number;

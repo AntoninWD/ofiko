@@ -1,12 +1,12 @@
 <script lang="ts">
     import { TOKEN_SIZE } from '../../../configs/map';
     import { tokenPosition, updateTokenPosition} from '../../../stores/map'
-    import type { Position, Coverage } from '../types';
+    import type { Position, Coordinates } from '../types';
     export let position: Position;
     export let duration: number;
 
     $: updateTokenPosition(position);
-    let tokenLocation: Coverage;
+    let tokenLocation: Coordinates;
 
     tokenPosition.subscribe((value) => {
         tokenLocation = value;

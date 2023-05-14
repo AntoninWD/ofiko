@@ -12,6 +12,7 @@
     import ClickAnimate from '../common/ClickAnimate.svelte';
     import type { Position } from './types';
     import Layout from './layout/Layout.svelte';
+    import { updateMapCoordinates } from '../../stores/map';
 
     let mapRef: HTMLDivElement;
 
@@ -25,6 +26,7 @@
     onMount(() => {
         windowWidth = window.innerWidth;
         windowHeight = window.innerHeight - HEADER_HEIGHT;
+        updateMapCoordinates(mapRef);
     });
 
     $: mapCenter = {
@@ -63,7 +65,7 @@
         // To allow click when the token as reach 50% of the destination and to prevent spamming
         const durationBuffer = duration * 0.5;
 
-        position = {...position , x, y};
+        position = { ...position, x, y };
 
         // Prevent click if is moving
         setTimeout(() => {
@@ -104,16 +106,16 @@
 >
     <div class="relative" style="width: {MAP_WIDTH}px; height: {MAP_HEIGHT}px">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
-        {#if hasRendered}
-            <div
-                bind:this={mapRef}
-                on:click={getClickPosition}
-                class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}
-            >
+        <div
+            bind:this={mapRef}
+            on:click={getClickPosition}
+            class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}
+        >
+            {#if hasRendered}
                 <AvatarToken {position} {duration} />
                 <ClickAnimate {triggerClick} {position} />
                 <Layout />
-            </div>
-        {/if}
+            {/if}
+        </div>
     </div>
 </div>
