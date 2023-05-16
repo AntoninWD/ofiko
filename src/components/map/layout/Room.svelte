@@ -11,6 +11,7 @@
 </script>
 
 <div
+    id='room'
     class="absolute"
     style="top: {position.top}px; left: {position.left}px; bottom: {position.bottom}px; right: {position.right}px"
 >

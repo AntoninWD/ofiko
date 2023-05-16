@@ -12,7 +12,7 @@
     import ClickAnimate from '../common/ClickAnimate.svelte';
     import type { Position } from './types';
     import Layout from './layout/Layout.svelte';
-    import { updateMapCoordinates } from '../../stores/map';
+    import { updateMapCoordinates, verifyAssetsCollisionWithToken } from '../../stores/map';
 
     let mapRef: HTMLDivElement;
 
@@ -65,8 +65,8 @@
         // To allow click when the token as reach 50% of the destination and to prevent spamming
         const durationBuffer = duration * 0.5;
 
+        verifyAssetsCollisionWithToken({ ...position, x, y });
         position = { ...position, x, y };
-
         // Prevent click if is moving
         setTimeout(() => {
             isMoving = false;
@@ -107,6 +107,7 @@
     <div class="relative" style="width: {MAP_WIDTH}px; height: {MAP_HEIGHT}px">
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
+            id="map"
             bind:this={mapRef}
             on:click={getClickPosition}
             class={`rounded shadow-md bg-white bg-grid w-[98%] h-[98%] bg-repeat absolute-centered border-2 border-blue-500`}

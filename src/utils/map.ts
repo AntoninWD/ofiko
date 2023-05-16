@@ -7,3 +7,12 @@ export const getCoordinates = (position: Position): Coordinates => {
         y: [y - height, y + height],
     };
 };
+
+
+export const transformOffsetToCoordinates = (ref: HTMLDivElement) => {
+    const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = ref;
+    return {
+        x: [offsetLeft - offsetWidth, offsetLeft + offsetWidth],
+        y: [offsetTop - offsetHeight, offsetTop + offsetHeight],
+    };
+}

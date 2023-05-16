@@ -6,9 +6,10 @@
     import { onMount } from 'svelte';
     import { updateAssetsCoordinates } from '../../../stores/map';
     let ref: HTMLDivElement;
+    const nameSpace = `${name}-wall-${placement}`;
 
     onMount(() => {
-        updateAssetsCoordinates(`${name}-wall-${placement}`, ref);
+        updateAssetsCoordinates(nameSpace, ref);
     });
 
     const isVertical = placement === 'top' || placement === 'bottom';
@@ -41,6 +42,7 @@
 </script>
 
 <div
+    id={nameSpace}
     bind:this={ref}
     class="absolute border-[12px] border-slate-200 shadow-sm border-solid {wallStyle} {wallSize}"
     style="{placement}: 0;"
