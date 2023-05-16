@@ -49,6 +49,7 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
     while (parent.id !== 'map') {
         parent = parent.offsetParent as HTMLDivElement;
         if (parent.id === 'map') break;
+
         assetsCoordinatesInMap = {
             ...assetsCoordinatesInMap,
             x: assetsCoordinatesInMap.x + parent.offsetLeft,
@@ -63,6 +64,7 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
         width: ref.offsetWidth,
         height: ref.offsetHeight,
     };
+
     const coordinates = getCoordinates(assetsCoordinatesInMap);
     let newCoordinates = {};
 
@@ -77,22 +79,13 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
 
 export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
     const assetsCoordinatesInMap = get(assetsCoordinates);
-    console.log(assetsCoordinatesInMap);
+
     const tokenCoordinates = getCoordinates(tokenPosition);
-    console.log(tokenCoordinates);
+
     // Validate if token is inside any asset
     const isTokenInsideAsset = Object.values(assetsCoordinatesInMap).some((asset: any, i) => {
         let { x: assetX, y: assetY } = asset;
         const { x: tokenX, y: tokenY } = tokenCoordinates;
-
-        // check if negative
-        if (assetY[0] < 0) {
-            assetY[0] = 0;
-        }
-
-        if (assetX[0] < 0) {
-            assetX[0] = 0;
-        }
 
         // Check if the x coordinates overlap
         if (
@@ -104,15 +97,11 @@ export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
                 (tokenY[0] <= assetY[1] && tokenY[1] >= assetY[0]) ||
                 (tokenY[1] >= assetY[1] && tokenY[0] <= assetY[0])
             ) {
-                // There is a collision
-                console.log('collision!', i);
-                console.log('token', tokenX, tokenY);
-                console.log('asset', assetX, assetY);
                 return true;
             }
         }
         // No collision
         return false;
     });
-    console.log('isTokenInsideAsset', isTokenInsideAsset);
+    
 };
