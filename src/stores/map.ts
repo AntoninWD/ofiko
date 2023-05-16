@@ -103,5 +103,6 @@ export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
         // No collision
         return false;
     });
-    
+    console.log('isTokenInsideAsset', isTokenInsideAsset)
+    return isTokenInsideAsset;
 };

@@ -65,7 +65,12 @@
         // To allow click when the token as reach 50% of the destination and to prevent spamming
         const durationBuffer = duration * 0.5;
 
-        verifyAssetsCollisionWithToken({ ...position, x, y });
+        if(verifyAssetsCollisionWithToken({ ...position, x, y })) {
+            isMoving = false;
+            triggerClick = false;
+            return;
+        };
+        
         position = { ...position, x, y };
         // Prevent click if is moving
         setTimeout(() => {
