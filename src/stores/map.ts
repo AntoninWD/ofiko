@@ -25,7 +25,8 @@ export const tokenPosition = writable(getCoordinates(DEFAULT_POSITION));
 export const updateTokenPosition = (position: Position) => {
     tokenPosition.update(() => {
         return getCoordinates({
-            ...position,
+            x:position.x  - position.width / 2, 
+            y: position.y - position.height / 2,
             width: position.width / 2,
             height: position.height / 2,
         });

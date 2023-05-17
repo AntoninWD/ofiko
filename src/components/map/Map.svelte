@@ -70,7 +70,7 @@
             triggerClick = false;
             return;
         };
-        
+        // TODO: if colision get closed colision point from prev position and set it as new position
         position = { ...position, x, y };
         // Prevent click if is moving
         setTimeout(() => {
