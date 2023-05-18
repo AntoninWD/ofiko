@@ -25,7 +25,7 @@ export const tokenPosition = writable(getCoordinates(DEFAULT_POSITION));
 export const updateTokenPosition = (position: Position) => {
     tokenPosition.update(() => {
         return getCoordinates({
-            x:position.x  - position.width / 2, 
+            x: position.x - position.width / 2,
             y: position.y - position.height / 2,
             width: position.width / 2,
             height: position.height / 2,
@@ -81,7 +81,12 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
 export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
     const assetsCoordinatesInMap = get(assetsCoordinates);
 
-    const tokenCoordinates = getCoordinates(tokenPosition);
+    const tokenCoordinates = getCoordinates({
+        x: tokenPosition.x - tokenPosition.width / 2,
+        y: tokenPosition.y - tokenPosition.height / 2,
+        width: tokenPosition.width,
+        height: tokenPosition.height
+    });
 
     // Validate if token is inside any asset
     const isTokenInsideAsset = Object.values(assetsCoordinatesInMap).some((asset: any, i) => {
@@ -104,6 +109,6 @@ export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
         // No collision
         return false;
     });
-    console.log('isTokenInsideAsset', isTokenInsideAsset)
+    console.log('isTokenInsideAsset', isTokenInsideAsset);
     return isTokenInsideAsset;
 };
