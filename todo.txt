@@ -15,6 +15,10 @@ tv
     - AssetsGroups: ex: office+chair
     - Assets: interaction(events,popup when close to it), anchor(like to sit on it)
 - Prevent token to move on assets
+    - prevent asset click
+    - check if asset in the way on click
+    - validate token move animation(requestAnimationFrame)
+    - make click animation independant of position
 - Supabase, Prisma, Lucia
 - Install websocket
 - Make auth flow(only on invite for now) Lucia

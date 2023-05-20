@@ -12,7 +12,7 @@
     import ClickAnimate from '../common/ClickAnimate.svelte';
     import type { Position } from './types';
     import Layout from './layout/Layout.svelte';
-    import { updateMapCoordinates, verifyAssetsCollisionWithToken } from '../../stores/map';
+    import { updateMapCoordinates, preventClickOnAsset, validateIntersectionWithAsset } from '../../stores/map';
 
     let mapRef: HTMLDivElement;
 
@@ -64,14 +64,17 @@
 
         // To allow click when the token as reach 50% of the destination and to prevent spamming
         const durationBuffer = duration * 0.5;
+        const newPosition = {...position, x, y}
 
-        if(verifyAssetsCollisionWithToken({ ...position, x, y })) {
+        if(preventClickOnAsset(newPosition)) {
             isMoving = false;
             triggerClick = false;
             return;
         };
-        // TODO: if colision get closed colision point from prev position and set it as new position
-        position = { ...position, x, y };
+
+
+        position = validateIntersectionWithAsset(newPosition)
+
         // Prevent click if is moving
         setTimeout(() => {
             isMoving = false;

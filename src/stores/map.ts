@@ -78,14 +78,14 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
     });
 };
 
-export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
+export const preventClickOnAsset = (tokenPosition: Position) => {
     const assetsCoordinatesInMap = get(assetsCoordinates);
 
     const tokenCoordinates = getCoordinates({
         x: tokenPosition.x - tokenPosition.width / 2,
         y: tokenPosition.y - tokenPosition.height / 2,
         width: tokenPosition.width,
-        height: tokenPosition.height
+        height: tokenPosition.height,
     });
 
     // Validate if token is inside any asset
@@ -109,6 +109,129 @@ export const verifyAssetsCollisionWithToken = (tokenPosition: Position) => {
         // No collision
         return false;
     });
-    console.log('isTokenInsideAsset', isTokenInsideAsset);
+
     return isTokenInsideAsset;
+};
+
+// To check the token trajectory before moving it and preventing it from overlapping with assets
+export const validateIntersectionWithAsset = (afterTokenPosition: Position) => {
+    const assetsCoordinatesInMap = getAssetsCoordinates();
+    const prevTokenCoordinates = getTokenPosition();
+    const afterTokenCoordinates = getCoordinates(afterTokenPosition);
+
+    let newPositionIfOverlapping: {
+        x: number;
+        y: number;
+    } = { x: 0, y: 0 };
+
+    // Check if the token's trajectory intersects with any asset
+    const isTokenTrajectoryInvalid = Object.values(assetsCoordinatesInMap)
+        // Sort to make sure the closest asset is checked first
+        .sort(sortByClosestAssetDistance)
+        .find(findAssetIntersection);
+
+    if (isTokenTrajectoryInvalid) {
+        return { ...afterTokenPosition, ...newPositionIfOverlapping };
+    } else {
+        // No trajectory collision
+        return afterTokenPosition;
+    }
+
+    function getAssetsCoordinates() {
+        return get(assetsCoordinates);
+    }
+
+    function getTokenPosition() {
+        return get(tokenPosition);
+    }
+
+    function sortByClosestAssetDistance(a: any, b: any) {
+        const aDistance = calculateDistance(a.x[0], a.y[0]);
+        const bDistance = calculateDistance(b.x[0], b.y[0]);
+        return aDistance - bDistance;
+    }
+
+    function calculateDistance(x: number, y: number) {
+        return Math.sqrt(
+            Math.pow(x - prevTokenCoordinates.x[0], 2) + Math.pow(y - prevTokenCoordinates.y[0], 2),
+        );
+    }
+
+    function findAssetIntersection(asset: any) {
+        const tokenRect = {
+            width: afterTokenPosition.width,
+            height: afterTokenPosition.height,
+        };
+
+        const assetXRange = asset.x;
+        const assetYRange = asset.y;
+        const tokenXRange = [prevTokenCoordinates.x[0], afterTokenCoordinates.x[1]];
+        const tokenYRange = [prevTokenCoordinates.y[0], afterTokenCoordinates.y[1]];
+
+        const isXOverlap =
+            (tokenXRange[0] < assetXRange[1] && tokenXRange[1] > assetXRange[0]) ||
+            (tokenXRange[0] > assetXRange[0] && tokenXRange[1] < assetXRange[1]);
+
+        const isYOverlap =
+            (tokenYRange[0] < assetYRange[1] && tokenYRange[1] > assetYRange[0]) ||
+            (tokenYRange[0] > assetYRange[0] && tokenYRange[1] < assetYRange[1]);
+
+        if (isXOverlap && isYOverlap) {
+            const isComingFromRight = tokenXRange[0] >= assetXRange[1];
+            const isComingFromLeft = tokenXRange[0] <= assetXRange[0];
+            const isComingFromBottom = tokenYRange[0] >= assetYRange[1];
+            const isComingFromTop = tokenYRange[0] <= assetYRange[0];
+
+            let closestX = 0;
+            let closestY = 0;
+            console.log('-----');
+            console.log('right', isComingFromRight);
+            console.log('left', isComingFromLeft);
+            console.log('bottom', isComingFromBottom);
+            console.log('top', isComingFromTop);
+            // Determine the closest position based on the direction of the token
+            if (isComingFromRight && isComingFromTop) {
+                // RIGHT TOP
+                closestX = assetXRange[1] + tokenRect.width / 2;
+                closestY = assetYRange[0] - tokenRect.height / 2;
+            } else if (isComingFromRight && isComingFromBottom) {
+                // RIGHT BOTTOM
+                closestX = assetXRange[1] + tokenRect.width / 2;
+                closestY = assetYRange[1] - tokenRect.height / 2;
+            } else if (isComingFromLeft && isComingFromTop) {
+                // LEFT TOP
+                closestX = assetXRange[0] - tokenRect.width / 2;
+                closestY = assetYRange[0] - tokenRect.height / 2;
+            } else if (isComingFromLeft && isComingFromBottom) {
+                // LEFT BOTTOM
+                closestX = assetXRange[0] - tokenRect.width / 2;
+                closestY = assetYRange[1] + tokenRect.height / 2;
+            } else if (isComingFromRight) {
+                // RIGHT
+                closestX = assetXRange[1] + tokenRect.width / 2;
+                closestY = tokenYRange[1] - tokenRect.height;
+            } else if (isComingFromLeft) {
+                // LEFT
+                closestX = assetXRange[0] - tokenRect.width / 2;
+                closestY = tokenYRange[1] - tokenRect.height;
+            } else if (isComingFromTop) {
+                // TOP
+                closestX = tokenXRange[1] - tokenRect.width;
+                closestY = assetYRange[0] - tokenRect.height / 2;
+            } else if (isComingFromBottom) {
+                // BOTTOM
+                closestX = tokenXRange[1] - tokenRect.width;
+                closestY = assetYRange[1] + tokenRect.height / 2;
+            }
+
+            newPositionIfOverlapping = {
+                x: closestX,
+                y: closestY,
+            };
+            return true;
+        }
+
+        // No collision
+        return false;
+    }
 };
