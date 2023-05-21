@@ -44,6 +44,6 @@
 <div
     id={nameSpace}
     bind:this={ref}
-    class="absolute border-[12px] border-slate-200 shadow-sm border-solid {wallStyle} {wallSize}"
+    class="absolute border-[12px] border-slate-200 shadow-sm {wallStyle} {wallSize}"
     style="{placement}: 0;"
 />
