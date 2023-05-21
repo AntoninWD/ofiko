@@ -42,7 +42,8 @@ export const assetsCoordinates = writable<
 >({});
 
 export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
-    console.log(name,ref)
+    if(!ref) return;
+
     let parent = ref.offsetParent as HTMLDivElement;
 
     let assetsCoordinatesInMap: Position = {
