@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store';
 import { DEFAULT_POSITION } from '../configs/map';
 import type { Position, Coordinates } from '../components/map/types';
-import { getCoordinates, transformOffsetToCoordinates } from '../utils/map';
+import { getCoordinates } from '../utils/map';
 
 // MAP
 export const mapCoordinates = writable<
@@ -34,7 +34,12 @@ export const updateTokenPosition = (position: Position) => {
 };
 
 // ASSETS
-export const assetsCoordinates = writable({});
+export const assetsCoordinates = writable<
+    | {}
+    | {
+          [key: string]: Coordinates;
+      }
+>({});
 
 export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
     let parent = ref.offsetParent as HTMLDivElement;
@@ -89,26 +94,28 @@ export const preventClickOnAsset = (tokenPosition: Position) => {
     });
 
     // Validate if token is inside any asset
-    const isTokenInsideAsset = Object.values(assetsCoordinatesInMap).some((asset: any, i) => {
-        let { x: assetX, y: assetY } = asset;
-        const { x: tokenX, y: tokenY } = tokenCoordinates;
+    const isTokenInsideAsset = Object.values(assetsCoordinatesInMap).some(
+        (asset: Coordinates, i) => {
+            let { x: assetX, y: assetY } = asset;
+            const { x: tokenX, y: tokenY } = tokenCoordinates;
 
-        // Check if the x coordinates overlap
-        if (
-            (tokenX[0] <= assetX[1] && tokenX[1] >= assetX[0]) ||
-            (tokenX[1] >= assetX[1] && tokenX[0] <= assetX[0])
-        ) {
-            // Check if the y coordinates overlap
+            // Check if the x coordinates overlap
             if (
-                (tokenY[0] <= assetY[1] && tokenY[1] >= assetY[0]) ||
-                (tokenY[1] >= assetY[1] && tokenY[0] <= assetY[0])
+                (tokenX[0] < assetX[1] && tokenX[1] > assetX[0]) ||
+                (tokenX[1] > assetX[1] && tokenX[0] < assetX[0])
             ) {
-                return true;
+                // Check if the y coordinates overlap
+                if (
+                    (tokenY[0] < assetY[1] && tokenY[1] > assetY[0]) ||
+                    (tokenY[1] > assetY[1] && tokenY[0] < assetY[0])
+                ) {
+                    return true;
+                }
             }
-        }
-        // No collision
-        return false;
-    });
+            // No collision
+            return false;
+        },
+    );
 
     return isTokenInsideAsset;
 };
@@ -119,21 +126,55 @@ export const validateIntersectionWithAsset = (afterTokenPosition: Position) => {
     const prevTokenCoordinates = getTokenPosition();
     const afterTokenCoordinates = getCoordinates(afterTokenPosition);
 
-    let newPositionIfOverlapping: {
-        x: number;
-        y: number;
-    } = { x: 0, y: 0 };
+    const prevPosition = {
+        x: prevTokenCoordinates.x[0] + afterTokenPosition.width / 2,
+        y: prevTokenCoordinates.y[0] + afterTokenPosition.height / 2,
+    } as Position;
+
+    let tokenDirection = {
+        x: [prevTokenCoordinates.x[0], afterTokenCoordinates.x[1]],
+        y: [prevTokenCoordinates.y[0], afterTokenCoordinates.y[1]],
+    } as Coordinates;
 
     // Check if the token's trajectory intersects with any asset
-    const isTokenTrajectoryInvalid = Object.values(assetsCoordinatesInMap)
+    const newTokenPosition = Object.values(assetsCoordinatesInMap)
         // Sort to make sure the closest asset is checked first
         .sort(sortByClosestAssetDistance)
-        .find(findAssetIntersection);
+        .reduce((acc, asset: Coordinates, i: number) => {
+            const newPosition = calcAssetsIntersection(acc, asset, tokenDirection);
 
-    if (isTokenTrajectoryInvalid) {
-        return { ...afterTokenPosition, ...newPositionIfOverlapping };
+            const positionHasChanged = newPosition.x !== acc.x || newPosition.y !== acc.y;
+
+            const accHasChanged = acc.x !== afterTokenPosition.x || acc.y !== afterTokenPosition.y;
+
+            if (positionHasChanged && !accHasChanged) {
+                // Update the token direction for the other assets to consider the updated position
+                tokenDirection = {
+                    x: [tokenDirection.x[0], newPosition.x],
+                    y: [tokenDirection.y[0], newPosition.y],
+                };
+                return newPosition;
+            } else if (positionHasChanged && accHasChanged) {
+                // Cancel the position change
+                // Happen when the is multiple assets collision 
+                return prevPosition;
+            } else {
+                return acc;
+            }
+        }, afterTokenPosition);
+
+    const hasNewPosition =
+        newTokenPosition.x !== afterTokenPosition.x || newTokenPosition.y !== afterTokenPosition.y;
+
+    // Revalidate to make sure the token is not inside another asset
+    const isTokenInsideAsset = preventClickOnAsset(newTokenPosition);
+
+    // Set the new position
+    if (hasNewPosition && !isTokenInsideAsset) {
+        return { ...afterTokenPosition, ...newTokenPosition };
+    } else if (isTokenInsideAsset && hasNewPosition) {
+        return { ...afterTokenPosition, ...prevPosition };
     } else {
-        // No trajectory collision
         return afterTokenPosition;
     }
 
@@ -145,7 +186,7 @@ export const validateIntersectionWithAsset = (afterTokenPosition: Position) => {
         return get(tokenPosition);
     }
 
-    function sortByClosestAssetDistance(a: any, b: any) {
+    function sortByClosestAssetDistance(a: Coordinates, b: Coordinates) {
         const aDistance = calculateDistance(a.x[0], a.y[0]);
         const bDistance = calculateDistance(b.x[0], b.y[0]);
         return aDistance - bDistance;
@@ -157,16 +198,15 @@ export const validateIntersectionWithAsset = (afterTokenPosition: Position) => {
         );
     }
 
-    function findAssetIntersection(asset: any) {
-        const tokenRect = {
-            width: afterTokenPosition.width,
-            height: afterTokenPosition.height,
-        };
-
+    function calcAssetsIntersection(
+        acc: typeof afterTokenPosition,
+        asset: Coordinates,
+        tokenDirection: Coordinates,
+    ): Position {
         const assetXRange = asset.x;
         const assetYRange = asset.y;
-        const tokenXRange = [prevTokenCoordinates.x[0], afterTokenCoordinates.x[1]];
-        const tokenYRange = [prevTokenCoordinates.y[0], afterTokenCoordinates.y[1]];
+        const tokenXRange = [tokenDirection.x[0], tokenDirection.x[1]];
+        const tokenYRange = [tokenDirection.y[0], tokenDirection.y[1]];
 
         const isXOverlap =
             (tokenXRange[0] < assetXRange[1] && tokenXRange[1] > assetXRange[0]) ||
@@ -177,61 +217,80 @@ export const validateIntersectionWithAsset = (afterTokenPosition: Position) => {
             (tokenYRange[0] > assetYRange[0] && tokenYRange[1] < assetYRange[1]);
 
         if (isXOverlap && isYOverlap) {
-            const isComingFromRight = tokenXRange[0] >= assetXRange[1];
-            const isComingFromLeft = tokenXRange[0] <= assetXRange[0];
-            const isComingFromBottom = tokenYRange[0] >= assetYRange[1];
-            const isComingFromTop = tokenYRange[0] <= assetYRange[0];
+            return calcAssetIntersection({
+                assetXRange,
+                assetYRange,
+                tokenXRange,
+                tokenYRange,
+            });
+        } else {
+            return acc;
+        }
+    }
 
-            let closestX = 0;
-            let closestY = 0;
-            console.log('-----');
-            console.log('right', isComingFromRight);
-            console.log('left', isComingFromLeft);
-            console.log('bottom', isComingFromBottom);
-            console.log('top', isComingFromTop);
-            // Determine the closest position based on the direction of the token
-            if (isComingFromRight && isComingFromTop) {
-                // RIGHT TOP
-                closestX = assetXRange[1] + tokenRect.width / 2;
-                closestY = assetYRange[0] - tokenRect.height / 2;
-            } else if (isComingFromRight && isComingFromBottom) {
-                // RIGHT BOTTOM
-                closestX = assetXRange[1] + tokenRect.width / 2;
-                closestY = assetYRange[1] - tokenRect.height / 2;
-            } else if (isComingFromLeft && isComingFromTop) {
-                // LEFT TOP
-                closestX = assetXRange[0] - tokenRect.width / 2;
-                closestY = assetYRange[0] - tokenRect.height / 2;
-            } else if (isComingFromLeft && isComingFromBottom) {
-                // LEFT BOTTOM
-                closestX = assetXRange[0] - tokenRect.width / 2;
-                closestY = assetYRange[1] + tokenRect.height / 2;
-            } else if (isComingFromRight) {
-                // RIGHT
-                closestX = assetXRange[1] + tokenRect.width / 2;
-                closestY = tokenYRange[1] - tokenRect.height;
-            } else if (isComingFromLeft) {
-                // LEFT
-                closestX = assetXRange[0] - tokenRect.width / 2;
-                closestY = tokenYRange[1] - tokenRect.height;
-            } else if (isComingFromTop) {
-                // TOP
-                closestX = tokenXRange[1] - tokenRect.width;
-                closestY = assetYRange[0] - tokenRect.height / 2;
-            } else if (isComingFromBottom) {
-                // BOTTOM
-                closestX = tokenXRange[1] - tokenRect.width;
-                closestY = assetYRange[1] + tokenRect.height / 2;
-            }
+    function calcAssetIntersection({
+        assetXRange,
+        assetYRange,
+        tokenXRange,
+        tokenYRange,
+    }: {
+        assetXRange: number[];
+        assetYRange: number[];
+        tokenXRange: number[];
+        tokenYRange: number[];
+    }): typeof afterTokenPosition {
+        const tokenRect = {
+            width: afterTokenPosition.width,
+            height: afterTokenPosition.height,
+        };
+        const isComingFromRight = tokenXRange[0] >= assetXRange[1];
+        const isComingFromLeft = tokenXRange[0] <= assetXRange[0];
+        const isComingFromBottom = tokenYRange[0] >= assetYRange[1];
+        const isComingFromTop = tokenYRange[0] <= assetYRange[0];
 
-            newPositionIfOverlapping = {
-                x: closestX,
-                y: closestY,
-            };
-            return true;
+        let closestX = prevPosition.x;
+        let closestY = prevPosition.y;
+
+        // Determine the closest position based on the direction of the token
+        if (isComingFromRight && isComingFromTop) {
+            // RIGHT TOP
+            closestX = assetXRange[1] + tokenRect.width / 2;
+            closestY = assetYRange[0] - tokenRect.height / 2;
+        } else if (isComingFromRight && isComingFromBottom) {
+            // RIGHT BOTTOM
+            closestX = assetXRange[1] + tokenRect.width / 2;
+            closestY = assetYRange[1] + tokenRect.height / 2;
+        } else if (isComingFromLeft && isComingFromTop) {
+            // LEFT TOP
+            closestX = assetXRange[0] - tokenRect.width / 2;
+            closestY = assetYRange[0] - tokenRect.height / 2;
+        } else if (isComingFromLeft && isComingFromBottom) {
+            // LEFT BOTTOM
+            closestX = assetXRange[0] - tokenRect.width / 2;
+            closestY = assetYRange[1] + tokenRect.height / 2;
+        } else if (isComingFromRight) {
+            // RIGHT
+            closestX = assetXRange[1] + tokenRect.width / 2;
+            closestY = tokenYRange[1] - tokenRect.height;
+        } else if (isComingFromLeft) {
+            // LEFT
+            closestX = assetXRange[0] - tokenRect.width / 2;
+            closestY = tokenYRange[1] - tokenRect.height;
+        } else if (isComingFromTop) {
+            // TOP
+            closestX = tokenXRange[1] - tokenRect.width;
+            closestY = assetYRange[0] - tokenRect.height / 2;
+        } else if (isComingFromBottom) {
+            // BOTTOM
+            closestX = tokenXRange[1] - tokenRect.width;
+            closestY = assetYRange[1] + tokenRect.height / 2;
         }
 
-        // No collision
-        return false;
+        return {
+            x: closestX,
+            y: closestY,
+            width: afterTokenPosition.width,
+            height: afterTokenPosition.height,
+        };
     }
 };

@@ -8,7 +8,7 @@
     $: updateTokenPosition(position);
     let tokenLocation: Coordinates;
 
-    tokenPosition.subscribe((value) => {
+    tokenPosition.subscribe((value) => {    
         tokenLocation = value;
     });
 
