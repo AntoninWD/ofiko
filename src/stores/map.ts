@@ -50,19 +50,18 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
         width: 0,
         height: 0,
     };
-
     // increment offset values until parent is map
     while (parent.id !== 'map') {
         parent = parent.offsetParent as HTMLDivElement;
         if (parent.id === 'map') break;
-
+        
         assetsCoordinatesInMap = {
             ...assetsCoordinatesInMap,
             x: assetsCoordinatesInMap.x + parent.offsetLeft,
             y: assetsCoordinatesInMap.y + parent.offsetTop,
         };
     }
-
+    
     // apply assets coordinates in map
     assetsCoordinatesInMap = {
         x: ref.offsetLeft + assetsCoordinatesInMap.x,
@@ -70,7 +69,8 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
         width: ref.offsetWidth,
         height: ref.offsetHeight,
     };
-
+    
+    
     const coordinates = getCoordinates(assetsCoordinatesInMap);
     let newCoordinates = {};
 
@@ -79,6 +79,7 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement) => {
             ...prevCoordinates,
             [name]: coordinates,
         };
+        console.log(newCoordinates)
         return newCoordinates;
     });
 };

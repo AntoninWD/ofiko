@@ -1,6 +1,6 @@
 <script lang="ts">
     import Wall from '../assets/Wall.svelte';
-    import Asset from '../assets/Asset.svelte';
+
     import type { DoorPosition } from '../types';
     export let height: number;
     export let width: number;
@@ -8,10 +8,11 @@
     // Stands for door position ex: tr = top right
     export let doorPosition: DoorPosition;
     export let position: { top?: number; left?: number; bottom?: number; right?: number };
+    export let template: any;
 </script>
 
 <div
-    id='room'
+    id="room"
     class="absolute"
     style="top: {position.top}px; left: {position.left}px; bottom: {position.bottom}px; right: {position.right}px"
 >
@@ -24,6 +25,6 @@
 
         <Wall {name} placement="right" {doorPosition} />
 
-        <slot />
+        <svelte:component this={template} roomName={name} />
     </div>
 </div>

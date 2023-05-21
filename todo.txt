@@ -11,15 +11,15 @@ meeting table,
 tv
 
 - Make layout of the map with the items (if no items make the wall etc..)
-    - Room component: size, placement, door
+    - Room component: size, placement, door  - DONE
     - AssetsGroups: ex: office+chair
     - Assets: interaction(events,popup when close to it), anchor(like to sit on it)
 - Prevent token to move on assets
-    - prevent asset click
-    - check if asset in the way on click
+    - prevent asset click - DONE
+    - check if asset in the way on click  - DONE
     - validate token move animation(requestAnimationFrame)
     - make click animation independant of position
-- Supabase, Prisma, Lucia
+- Supabase, Prisma, Lucia, planetScale?
 - Install websocket
 - Make auth flow(only on invite for now) Lucia
 - Test with 2 connections and interact
@@ -28,3 +28,16 @@ tv
 - Add link system(ex: when entering in meeting room show google meet popup)
 - Add status system
 - Add writing chat system
+
+
+
+Before presentation
+- fix click animation
+- check for requestAnimationFrame
+- Add all assets and test token collision
+- Modify default spawn position
+- Add brand board
+- Add events, clip on asset or room
+- Add room name where token is somewhere
+
+

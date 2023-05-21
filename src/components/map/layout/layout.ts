@@ -1,4 +1,7 @@
 import type { DoorPosition } from '../types';
+import Kitchen from '../template/Kitchen.svelte';
+import Meeting from '../template/Meeting.svelte';
+
 interface Room {
     name: string;
     width: number;
@@ -10,6 +13,7 @@ interface Room {
         bottom?: number;
         right?: number;
     };
+    template: typeof Kitchen;
 }
 
 const rooms = [] as Room[];
@@ -23,6 +27,7 @@ rooms.push({
         top: 0,
         left: 0,
     },
+    template: Kitchen
 });
 
 rooms.push({
@@ -34,6 +39,7 @@ rooms.push({
         bottom: 0,
         right: 0,
     },
+    template: Meeting
 });
 
 rooms.push({
@@ -45,6 +51,7 @@ rooms.push({
         bottom: 0,
         left: 0,
     },
+    template: Meeting
 });
 
 rooms.push({
@@ -56,6 +63,7 @@ rooms.push({
         bottom: rooms.find((room) => room.name === 'Private Office')?.height || 0,
         left: 0,
     },
+    template: Meeting
 });
 
 export const layoutConfig = {
