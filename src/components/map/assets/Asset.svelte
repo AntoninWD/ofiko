@@ -8,6 +8,7 @@
     export let position: { top?: number; left?: number; bottom?: number; right?: number };
 
     const onload = createLoadObserver(() => {
+        if(ref === undefined) return;
         updateAssetsCoordinates(`${roomName}-${name}-assets`, ref);
     })
 
