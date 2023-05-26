@@ -14,6 +14,7 @@
     };
     export let id: number = 0;
     export let rotate: number = 0;
+    export let scale: number = 1;
 
     const onload = createLoadObserver(() => {
         if (ref === undefined) return;
@@ -33,7 +34,9 @@
     } ${position?.bottom ? `bottom: ${position.bottom}px;` : ''} ${
         position?.right ? `right: ${position.right}px;` : ''
     }
-    ${position?.centered ? 'top: 50%; left: 50%; transform: translate(-50%, -50%);' : ''}
-    ${rotate ? `transform: rotate(${rotate}deg);` : ''}
+    ${position?.centered ? 'top: 50%; left: 50%;' : ''}
+    ${`transform: rotate(${rotate}deg) scale(${scale})`}${
+        position?.centered ? 'translate(-50%, -50%)' : ''
+    }
     `}
 />

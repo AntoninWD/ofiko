@@ -10,7 +10,7 @@
     class="absolute"
     style="top: {position.top}px; left: {position.left}px; bottom: {position.bottom}px; right: {position.right}px"
 >
-    <div class="relative w-[360px] h-[250px]">
+    <div class="relative w-[360px] h-[200px]">
         <Asset
             {roomName}
             name="kitchen-table"
@@ -24,7 +24,7 @@
             {roomName}
             name="kitchen-chair"
             position={{
-                top: 50,
+                top: 25,
                 left: 5,
             }}
             rotate={-90}
@@ -34,7 +34,7 @@
             id={1}
             name="kitchen-chair"
             position={{
-                top: 135,
+                top: 115,
                 left: 5,
             }}
             rotate={-90}
@@ -44,7 +44,7 @@
             name="kitchen-chair"
             id={2}
             position={{
-                top: 50,
+                top: 25,
                 right: 5,
             }}
             rotate={90}
@@ -54,7 +54,7 @@
             name="kitchen-chair"
             id={3}
             position={{
-                top: 135,
+                top: 115,
                 right: 5,
             }}
             rotate={90}
