@@ -55,7 +55,7 @@ export const updateAssetsCoordinates = (name: string, ref: HTMLDivElement | HTML
     while (parent.id !== 'map') {
         parent = parent.offsetParent as HTMLDivElement;
         if (parent.id === 'map') break;
-        console.log(name,parent.offsetLeft, parent.offsetTop)
+        // console.log(name,parent.offsetLeft, parent.offsetTop)
         assetsCoordinatesInMap = {
             ...assetsCoordinatesInMap,
             x: assetsCoordinatesInMap.x + parent.offsetLeft,

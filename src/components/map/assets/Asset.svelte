@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from 'svelte';
     import { updateAssetsCoordinates } from '../../../stores/map';
     import { createLoadObserver } from '../../../utils/general';
-    let ref: HTMLImageElement;
+    let ref: HTMLDivElement;
     export let name: string;
     export let roomName: string;
     export let position: {
@@ -23,20 +22,21 @@
     });
 </script>
 
-<img
-    use:onload
-    bind:this={ref}
-    class="absolute"
-    src={`/images/assets/${name}.png`}
-    alt={name}
-    style={`${position?.top ? `top: ${position.top}px;` : ''} ${
-        position?.left ? `left: ${position.left}px;` : ''
-    } ${position?.bottom ? `bottom: ${position.bottom}px;` : ''} ${
-        position?.right ? `right: ${position.right}px;` : ''
-    }
-    ${position?.centered ? 'top: 50%; left: 50%;' : ''}
-    ${`transform: rotate(${rotate}deg) scale(${scale})`}${
-        position?.centered ? 'translate(-50%, -50%)' : ''
-    }
-    `}
-/>
+
+    <div
+        class="absolute"
+        bind:this={ref}
+        style={`${position?.top ? `top: ${position.top}px;` : ''} ${
+            position?.left ? `left: ${position.left}px;` : ''
+        } ${position?.bottom ? `bottom: ${position.bottom}px;` : ''} ${
+            position?.right ? `right: ${position.right}px;` : ''
+        }     ${position?.centered ? 'top: 50%; left: 50%;' : ''}
+        ${`transform: 
+            rotate(${rotate}deg) 
+            scale(${scale})`}
+            ${position?.centered ? 'translate(-50%, -50%)' : ''}
+        `}
+    >
+        <img class="w-full h-full" use:onload src={`/images/assets/${name}.png`} alt={name} />
+    </div>
+

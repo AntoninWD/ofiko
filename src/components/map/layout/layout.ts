@@ -1,6 +1,7 @@
 import type { DoorPosition } from '../types';
-import Kitchen from '../template/Kitchen.svelte';
-import Meeting from '../template/Meeting.svelte';
+import Kitchen from '../room/Kitchen.svelte';
+import Meeting from '../room/Meeting.svelte';
+import PrivateOffice from '../room/PrivateOffice.svelte';
 
 interface Room {
     name: string;
@@ -51,7 +52,7 @@ rooms.push({
         bottom: 0,
         left: 0,
     },
-    template: Meeting
+    template: PrivateOffice
 });
 
 rooms.push({
@@ -63,7 +64,7 @@ rooms.push({
         bottom: rooms.find((room) => room.name === 'Private Office')?.height || 0,
         left: 0,
     },
-    template: Meeting
+    template: PrivateOffice
 });
 
 export const layoutConfig = {
